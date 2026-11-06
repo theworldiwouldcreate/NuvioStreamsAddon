@@ -10,28 +10,26 @@ const BASE_URL = 'https://vixsrc.to';
 
 // Helper function to make HTTP requests with default headers
 function makeRequest(url, options = {}) {
-    const defaultHeaders = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    const headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         'Accept': 'application/json,*/*',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://vixsrc.to/',
+        'Origin': 'https://vixsrc.to',
         ...options.headers
     };
 
     return fetch(url, {
+        ...options,
         method: options.method || 'GET',
-        headers: defaultHeaders,
-        ...options
-    })
-    .then(response => {
+        headers
+    }).then(response => {
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         return response;
-    })
-    .catch(error => {
-        console.error(`[Vixsrc] Request failed for ${url}: ${error.message}`);
+    }).catch(error => {
+        console.error(`[Vixsrc] Request failed: ${error.message}`);
         throw error;
     });
 }
@@ -166,7 +164,9 @@ function extractStreamFromPage(url, contentType, contentId, seasonNum, episodeNu
 
     return makeRequest(vixsrcUrl, {
         headers: {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Referer': 'https://vixsrc.to/',
+    'Origin': 'https://vixsrc.to'
         }
     })
     .then(response => response.text())
